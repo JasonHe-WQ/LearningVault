@@ -9,16 +9,11 @@
 
 当你在 Docker 中使用 Nginx 插件实现 4 层负载均衡时，SQLAlchemy 的连接池仍然可以发挥作用。在这种情况下，连接池可以帮助管理应用程序与数据库之间的连接，降低数据库连接的创建和释放开销。下面是一个使用 SQLAlchemy 连接池的详细示例。
 
-首先，确保安装了 SQLAlchemy：
 
-```
-pip install sqlalchemy
-
-```
 
 接下来，我们创建一个简单的 Python 应用程序来演示如何使用 SQLAlchemy 连接池。
 
-```
+```python3
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -87,7 +82,7 @@ pip install sqlalchemy aiomysql
 
 然后创建一个简单的异步 Python 应用程序来演示如何使用 SQLAlchemy 异步连接池：
 
-```
+```python3
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -158,7 +153,7 @@ pip install sqlalchemy aiomysql
 
 然后创建一个简单的异步 Python 应用程序来演示如何使用 SQLAlchemy 异步查询 `SELECT ... FOR UPDATE`：
 
-```
+```python3
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
