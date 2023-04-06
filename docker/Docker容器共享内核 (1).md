@@ -12,20 +12,6 @@
 
 ## USER:
 
-2 / 2
-Windows下的docker选择wsl2引擎就可以运行linux下的容器了对吗？
-
-## CHATGPT:
-
-是的，对于Windows下的Docker，你可以通过选择WSL2（Windows Subsystem for Linux 2）引擎来运行Linux容器。WSL2是Windows操作系统中的一个子系统，它允许你在Windows上运行原生Linux二进制文件。使用WSL2后，Windows用户能够利用Docker运行Linux容器，而无需使用虚拟机或其他方法。
-
-要在Windows上使用WSL2引擎运行Docker，你需要执行以下步骤：
-
-1. 确保你的Windows版本支持WSL2（Windows 10，版本1903或更高版本，具有x64体系结构）。
-2. 安装WSL2。你可以按照<a href="https://docs.microsoft.com/en-us/windows/wsl/install" target="_new">官方文档</a>进行安装。
-
-## USER:
-
 如何在容器没有运行的时候，查看全部已经创建的容器？
 
 ## CHATGPT:
