@@ -152,12 +152,14 @@ MIDDLEWARE = [
 2. 配置`urls.py`文件：
 
 在您的`urls.py`文件中，为登录和注销视图添加URL模式：
+```python
+from django.contrib.auth.views import LoginView, LogoutView
+urlpatterns = [ ... 
+                path('login/', LoginView.as_view(), name='login'), 
+                path('logout/', LogoutView.as_view(), name='logout'),
+                ...]
+```
 
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>css</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-css p-4"><span class="hljs-selector-tag">from</span> django<span class="hljs-selector-class">.contrib</span><span class="hljs-selector-class">.auth</span><span class="hljs-selector-class">.views</span> import LoginView, LogoutView
-
-urlpatterns = <span class="hljs-selector-attr">[    ...    path(<span class="hljs-string">'login/'</span>, LoginView.as_view(), name=<span class="hljs-string">'login'</span>),    path(<span class="hljs-string">'logout/'</span>, LogoutView.as_view(), name=<span class="hljs-string">'logout'</span>),    ...]</span>
-`</code></div></div>
-<code class="!whitespace-pre hljs language-css p-4">
 3. 创建登录表单：
 
 创建一个登录表单，让用户输入用户名和密码。将表单的`action`属性设置为登录视图的URL。
@@ -177,14 +179,13 @@ urlpatterns = <span class="hljs-selector-attr">[    ...    path(<span class="hlj
 4. 保护受限视图：
 
 使用`@login_required`装饰器确保只有已登录用户才能访问某些视图：
+```python
+from django.contrib.auth.decorators import login_required
+@login_required
+def protected_view(request):
+    ...
+```
 
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python p-4"><span class="hljs-keyword">from</span> django.contrib.auth.decorators <span class="hljs-keyword">import</span> login_required
-
-<span class="hljs-meta">@login_required</span>
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">protected_view</span>(<span class="hljs-params">request</span>):
-    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">"This is a protected view"</span>)
-`</code></div></div>
-<code class="!whitespace-pre hljs language-python p-4">
 5. 在视图中检查用户登录状态：
 
 在视图中，可以使用`request.user`属性来检查用户是否已经登录。`request.user`是一个`User`对象，如果用户未登录，则为`AnonymousUser`对象。
@@ -212,9 +213,10 @@ urlpatterns = <span class="hljs-selector-attr">[    ...    path(<span class="hlj
 
 首先，安装SQLAlchemy和MySQL驱动：
 
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs p-4">pip install sqlalchemy mysqlclient
-`</code></div></div>
-<code class="!whitespace-pre hljs p-4">
+```
+pip install sqlalchemy mysqlclient
+```
+
 2. 创建SQLAlchemy引擎和会话：
 
 在项目中的一个适当位置（例如`sqlalchemy_utils.py`），创建SQLAlchemy引擎和会话：
@@ -342,7 +344,7 @@ Base = declarative_base()
 `</code></div></div>
 <code class="!whitespace-pre hljs language-python p-4">
 在创建模型之后，运行以下命令生成数据库迁移：
-```python
+```
 python manage.py makemigrations
 ```
 
