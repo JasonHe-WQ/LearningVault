@@ -357,17 +357,19 @@ def create_user(request):
     user.save()
     return HttpResponse('User created!')
 def get_user(request, user_id): 
-    try: user = User.objects.get(id=user_id) 
-         response = HttpResponse(f"User {user.id}: {user.name}, {user.age}") 
+    try: 
+        user = User.objects.get(id=user_id) 
+        response = HttpResponse(f"User {user.id}: {user.name}, {user.age}") 
     except User.DoesNotExist: 
          response = HttpResponse("User not found") 
     return response
 def delete_user(request, user_id): 
-    try: user = User.objects.get(id=user_id) 
-         user.delete() 
-         response = HttpResponse(f"User {user.id} deleted") 
+    try: 
+        user = User.objects.get(id=user_id) 
+        user.delete() 
+        response = HttpResponse(f"User {user.id} deleted") 
     except User.DoesNotExist: 
-         response = HttpResponse("User not found") 
+        response = HttpResponse("User not found") 
     return response
 ```
 
