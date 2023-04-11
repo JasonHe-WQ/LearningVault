@@ -13,23 +13,28 @@ python中，有没有函数可以实现排序时，如果第一个key相同，�
 
 下面是一个示例，按照元组的第一个元素排序，如果第一个元素相同，则按照第二个元素排序：
 
-
-<code class="!whitespace-pre hljs language-python">my_list = [(1, 2), (3, 4), (2, 1), (1, 3)]
+```python
+my_list = [(1, 2), (3, 4), (2, 1), (1, 3)]
 sorted_list = sorted(my_list, key=lambda x: (x[0], x[1]))
 print(sorted_list)  # [(1, 2), (1, 3), (2, 1), (3, 4)]
-</code>
+```
+
+
 这里使用了lambda函数来定义排序的规则，<code>(x[0], x[1])</code>表示按照元组的第一个元素排序，如果第一个元素相同，则按照第二个元素排序。
 
 还有一种方式可以实现相同的功能，就是使用Python的<code>operator</code>模块中的<code>itemgetter</code>函数：
 
+```python
 
-<code class="!whitespace-pre hljs language-python">from operator import itemgetter
+
+from operator import itemgetter
 
 my_list = [(1, 2), (3, 4), (2, 1), (1, 3)]
 sorted_list = sorted(my_list, key=itemgetter(0, 1))
 print(sorted_list)  # [(1, 2), (1, 3), (2, 1), (3, 4)]
-</code>
-<code>itemgetter</code>函数可以用来获取元组或列表中的某个元素，这里<code>itemgetter(0, 1)</code>表示获取元组中的第一个和第二个元素，即按照第一个和第二个元素进行排序。
+```
+
+函数可以用来获取元组或列表中的某个元素，这里itemgetter(0, 1)表示获取元组中的第一个和第二个元素，即按照第一个和第二个元素进行排序。
 
 ## User:
 
@@ -42,23 +47,23 @@ print(sorted_list)  # [(1, 2), (1, 3), (2, 1), (3, 4)]
 
 下面是一个示例，按照元组的第一个元素排序，如果第一个元素相同，则按照第二个元素排序，如果第二个元素为字符串，则按照字母大小写排序，如果大小写相同，则继续比较，直到两个字符串中找到不同点或者耗尽：
 
-
-<code class="!whitespace-pre hljs language-python">my_list = [(1, "bc"), (3, "Ab"), (2, "ab"), (1, "cd")]
+```python
+my_list = [(1, "bc"), (3, "Ab"), (2, "ab"), (1, "cd")]
 sorted_list = sorted(my_list, key=lambda x: (x[0], x[1].lower()))
 print(sorted_list)  # [(1, 'bc'), (1, 'cd'), (2, 'ab'), (3, 'Ab')]
-</code>
+```
+
 这里的lambda函数定义了两个排序关键字，第一个关键字是元组的第一个元素，第二个关键字是元组的第二个元素的小写形式。因为小写字母的ASCII码值都比大写字母的ASCII码值大，所以小写字母会排在大写字母的前面。
 
 如果希望在第二个关键字的排序中，按照字母大小写逐个比较直到出现不同的字符，可以使用以下的方式：
 
-
-<code class="!whitespace-pre hljs language-python">def my_key(x):
+```python
+def my_key(x):
     return x[0], tuple(map(lambda c: ord(c.lower()), x[1]))
 
 my_list = [(1, "bc"), (3, "Ab"), (2, "ab"), (1, "cd")]
 sorted_list = sorted(my_list, key=my_key)
 print(sorted_list)  # [(1, 'bc'), (1, 'cd'), (2, 'ab'), (3, 'Ab')]
-</code>
-这里的<code>my_key</code>函数返回一个元组，包含两个元素：第一个元素是元组的第一个元素，第二个元素是元组的第二个元素的ASCII码的小写形式组成的元组。在比较两个元组时，Python会逐个比较元素，直到找到第一个不同的元素，然后根据它们的顺序返回排序结果。因此，这个方式可以实现按照字母大小写逐个比较直到出现不同的字符的排序功能。
+```
 
-Thread generated with <a href="https://chat.openai.com">ChatGPT</a> and downloaded with <a href="https://gptez.xyz">GPT-EZ</a>
+这里的my_key函数返回一个元组，包含两个元素：第一个元素是元组的第一个元素，第二个元素是元组的第二个元素的ASCII码的小写形式组成的元组。在比较两个元组时，Python会逐个比较元素，直到找到第一个不同的元素，然后根据它们的顺序返回排序结果。因此，这个方式可以实现按照字母大小写逐个比较直到出现不同的字符的排序功能。
