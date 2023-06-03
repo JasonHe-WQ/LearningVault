@@ -100,38 +100,6 @@ spec:
 
 请注意，这个 Service 配置应该和你的实际应用相匹配。例如，`spec.selector` 应该选择你的应用的 Pod，而 `targetPort` 应该匹配你的应用在 Pod 中监听的端口。
 
-## User:
-所以，从集群外观察，最终暴露出是ingress对吗？
-
-## ChatGPT:
-是的，对于 Kubernetes 集群外部的客户端来说，看到的是通过 Ingress 暴露出来的服务。
-
-Ingress 通常用于管理集群外部到集群内部服务的 HTTP 和 HTTPS 访问，它可以为一个或多个 Service 提供外部可访问的 URL、负载均衡、SSL 终止和基于名称的虚拟主机等。
-
-当你创建了一个 Ingress 后，Ingress Controller 会根据规则配置负载均衡器（如果有的话）或反向代理。然后，外部的流量可以通过这个负载均衡器或反向代理，根据 Ingress 的规则被路由到相应的 Service，然后再由 Service 转发到 Pod。
-
-所以说，从集群外部看，最终暴露出的是通过 Ingress 路由的服务。
-
-## User:
-那么，这个ingress的IP是什么呢？是任意node的ip吗？
-
-## ChatGPT:
-Ingress 的 IP 地址通常取决于你的 Kubernetes 集群和 Ingress Controller 的配置。
-
-1. 在某些环境中，比如使用了公有云提供商的 Kubernetes 服务（如 Google Kubernetes Engine 或 Amazon EKS），Ingress Controller 可能会为你的 Ingress 自动创建一个外部负载均衡器，并赋予一个公开的 IP 地址。在这种情况下，Ingress 的 IP 就是这个公开的 IP 地址。
-
-2. 在没有自动创建外部负载均衡器的环境中，如自建的 Kubernetes 集群，你可能需要手动配置一个负载均衡器或者使用 NodePort。在使用 NodePort 的情况下，你需要使用集群中任意 Node 的 IP 地址以及 NodePort 作为访问入口。
-
-3. 对于某些 Ingress Controller（如 Nginx Ingress Controller），也可以通过一个 Service of type `LoadBalancer` 来暴露。在这种情况下，Ingress Controller 会有一个对应的 Service，这个 Service 的 IP 地址就是你的 Ingress 的 IP 地址。
-
-
-你可以通过下面的命令查看 Ingress 的 IP 地址：
-
-```
-kubectl get ingress -n <namespace>
-```
-
-这会显示你在特定 namespace 下的所有 Ingress，包括它们的 IP 地址。请将 `<namespace>` 替换为你的实际 namespace。
 
 ## User:
 所以，对于一个没有使用Nginx Ingress Controller的集群，ingress还要再加一个service来暴露Ip和端口吗？
