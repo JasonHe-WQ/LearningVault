@@ -174,8 +174,7 @@ urlpatterns = [ ...
     <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"submit"</span>&gt;</span>Login<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
-</span>`</code></div></div>
-<code class="!whitespace-pre hljs language-php-template p-4">
+
 4. 保护受限视图：
 
 使用`@login_required`装饰器确保只有已登录用户才能访问某些视图：
@@ -196,104 +195,7 @@ def protected_view(request):
     <span class="hljs-keyword">else</span>:
         <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">"Please log in."</span>)
 `</code></div></div>
-<code class="!whitespace-pre hljs language-kotlin p-4">
 通过以上步骤，您可以在Django网站后端确保一个用户的登录。在实际应用中，您可能需要根据项目需求调整配置、模板和视图。
-</code></code></code></code></code>
-
-## USER:
-
-4 / 4
-请问如何使用Django与MySQL数据库进行交互的？要求使用sqlalchemy，请详细举例说明
-
-## CHATGPT:
-
-在Django中，默认使用的是Django ORM，而不是SQLAlchemy。然而，如果您确实想在Django项目中使用SQLAlchemy，可以将其作为第三方库来使用。以下是如何在Django项目中使用SQLAlchemy与MySQL数据库进行交互的步骤：
-
-1. 安装所需库：
-
-首先，安装SQLAlchemy和MySQL驱动：
-
-```
-pip install sqlalchemy mysqlclient
-```
-
-2. 创建SQLAlchemy引擎和会话：
-
-在项目中的一个适当位置（例如`sqlalchemy_utils.py`），创建SQLAlchemy引擎和会话：
-
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python p-4"><span class="hljs-keyword">from</span> sqlalchemy <span class="hljs-keyword">import</span> create_engine
-<span class="hljs-keyword">from</span> sqlalchemy.orm <span class="hljs-keyword">import</span> sessionmaker
-
-<span class="hljs-comment"># 使用项目的数据库配置信息创建引擎</span>
-engine = create_engine(<span class="hljs-string">'mysql+mysqldb://username:password@localhost/db_name'</span>)
-
-<span class="hljs-comment"># 创建会话工厂</span>
-Session = sessionmaker(bind=engine)
-`</code></div></div>
-<code class="!whitespace-pre hljs language-python p-4">
-3. 定义数据模型：
-
-定义使用SQLAlchemy的数据模型：
-
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python p-4"><span class="hljs-keyword">from</span> sqlalchemy <span class="hljs-keyword">import</span> Column, Integer, String
-<span class="hljs-keyword">from</span> sqlalchemy.ext.declarative <span class="hljs-keyword">import</span> declarative_base
-
-Base = declarative_base()
-
-<span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(<span class="hljs-title class_ inherited__">Base</span>):
-    __tablename__ = <span class="hljs-string">'users'</span>
-
-    <span class="hljs-built_in">id</span> = Column(Integer, primary_key=<span class="hljs-literal">True</span>)
-    name = Column(String(<span class="hljs-number">50</span>))
-    age = Column(Integer)
-`</code></div></div>
-<code class="!whitespace-pre hljs language-python p-4">
-4. 在视图中使用SQLAlchemy：
-
-在视图中，可以使用SQLAlchemy会话来执行数据库操作。以下是一个创建、查询和删除用户的示例：
-
-<div class="bg-black rounded-md mb-4"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans justify-between rounded-t-md"><span>python</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-python p-4"><span class="hljs-keyword">from</span> django.http <span class="hljs-keyword">import</span> HttpResponse
-<span class="hljs-keyword">from</span> .sqlalchemy_utils <span class="hljs-keyword">import</span> Session
-<span class="hljs-keyword">from</span> .models <span class="hljs-keyword">import</span> User
-
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">create_user</span>(<span class="hljs-params">request</span>):
-    session = Session()
-
-    new_user = User(name=<span class="hljs-string">"John Doe"</span>, age=<span class="hljs-number">30</span>)
-    session.add(new_user)
-    session.commit()
-
-    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">f"User created with ID: <span class="hljs-subst">{new_user.<span class="hljs-built_in">id</span>}</span>"</span>)
-
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">get_user</span>(<span class="hljs-params">request, user_id</span>):
-    session = Session()
-
-    user = session.query(User).get(user_id)
-    <span class="hljs-keyword">if</span> user:
-        response = HttpResponse(<span class="hljs-string">f"User <span class="hljs-subst">{user.<span class="hljs-built_in">id</span>}</span>: <span class="hljs-subst">{user.name}</span>, <span class="hljs-subst">{user.age}</span>"</span>)
-    <span class="hljs-keyword">else</span>:
-        response = HttpResponse(<span class="hljs-string">"User not found"</span>)
-
-    session.close()
-    <span class="hljs-keyword">return</span> response
-
-<span class="hljs-keyword">def</span> <span class="hljs-title function_">delete_user</span>(<span class="hljs-params">request, user_id</span>):
-    session = Session()
-
-    user = session.query(User).get(user_id)
-    <span class="hljs-keyword">if</span> user:
-        session.delete(user)
-        session.commit()
-        response = HttpResponse(<span class="hljs-string">f"User <span class="hljs-subst">{user.<span class="hljs-built_in">id</span>}</span> deleted"</span>)
-    <span class="hljs-keyword">else</span>:
-        response = HttpResponse(<span class="hljs-string">"User not found"</span>)
-
-    session.close()
-    <span class="hljs-keyword">return</span> response
-`</code></div></div>
-<code class="!whitespace-pre hljs language-python p-4">
-请注意，使用SQLAlchemy会绕过Django的一些内置功能，例如自动管理数据库连接和事务。在实际项目中，您需要根据需求和应用场景权衡使用Django ORM和SQLAlchemy的利弊。
-</code></code></code></code>
 
 ## USER:
 
@@ -341,8 +243,6 @@ Base = declarative_base()
 
     <span class="hljs-keyword">def</span> <span class="hljs-title function_">__str__</span>(<span class="hljs-params">self</span>):
         <span class="hljs-keyword">return</span> self.name
-`</code></div></div>
-<code class="!whitespace-pre hljs language-python p-4">
 在创建模型之后，运行以下命令生成数据库迁移：
 ```
 python manage.py makemigrations
