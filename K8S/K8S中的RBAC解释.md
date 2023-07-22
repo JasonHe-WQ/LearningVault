@@ -140,7 +140,7 @@ RoleBinding 是一种 Kubernetes 资源，用于将 Role 绑定到用户、组�
 
 
 ## User:
-请检修
+请继续
 
 ## ChatGPT:
 非常抱歉，我的上一条回答在最后被截断了。我将在这里继续解释 `roleRef` 的剩余部分。
