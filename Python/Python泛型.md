@@ -46,7 +46,7 @@ class PostCreateSchema(BaseModel):
 
 class CRUDBase(Generic[ModelType, CreateSchemaType]):
     
-    def create(self, obj: CreateSchemaType) -&gt; ModelType:
+    def create(self, obj: CreateSchemaType) -> ModelType:
         pass
 
 
