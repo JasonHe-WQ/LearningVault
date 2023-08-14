@@ -1,7 +1,7 @@
 # K8S Role 解析.
 
 ## User:
-<div class="empty:hidden">现在，你是一位经验丰富的K8S开发工程师，请解读下面的代码
+现在，你是一位经验丰富的K8S开发工程师，请解读下面的代码
 
 ```yaml
 kind: Role
@@ -12,7 +12,7 @@ metadata:
 rules:
 - apiGroups: [""]
   resources: ["pods"]
-  verbs: ["get", "watch", "list"]</div>
+  verbs: ["get", "watch", "list"]
 ```
 
 ## ChatGPT:
@@ -33,7 +33,7 @@ rules:
 所以，总结来说，这段代码定义了一个名为 "example-role" 的 Role，该 Role 在 "mynamespace" 命名空间中具有对 Pods 的查看（get、watch、list）权限。
 
 ## User:
-<div class="empty:hidden">那么，请继续详细解读下面的代码
+那么，请继续详细解读下面的代码
 
 ```yaml
 kind: RoleBinding
@@ -73,7 +73,7 @@ roleRef:
 所以，总结来说，这段代码定义了一个名为 "example-rolebinding" 的 RoleBinding，它将 "mynamespace" 命名空间中的 "example-role" Role 的权限赋予给名为 "example-user" 的用户。这意味着 "example-user" 用户现在有权查看、监视和列出 "mynamespace" 命名空间中的 Pods。
 
 ## User:
-<div class="empty:hidden">请进一步详细解释kind: User，请问这个User是什么？</div>
+请进一步详细解释kind: User，请问这个User是什么？
 
 ## ChatGPT:
 在 Kubernetes 的 RBAC 中，当你在 RoleBinding 或 ClusterRoleBinding 的 `subjects` 字段中设置 `kind: User` 时，你实际上是在指定一个用户，这个用户将被赋予相应的角色权限。
@@ -85,7 +85,7 @@ roleRef:
 所以，当你在 RoleBinding 中看到 `kind: User` 和 `name: example-user` 时，它实际上是指一个名为 "example-user" 的用户身份，这个用户身份应该已经在你的 Kubernetes API 身份验证系统中定义了。这个用户现在被授权了 RoleBinding 中定义的 Role 的权限。
 
 ## User:
-<div class="empty:hidden">那么，我如何生成一个新的User呢？如何分配不同的context呢？</div>
+那么，我如何生成一个新的User呢？如何分配不同的context呢？
 
 ## ChatGPT:
 在 Kubernetes 中，你不能直接创建一个 User，但你可以为某个用户或服务生成一个 kubeconfig 文件，该文件包含了连接到 Kubernetes 集群的所有信息，包括用户凭据、集群信息和上下文。
@@ -128,7 +128,7 @@ kubectl config use-context <username>
 请注意，这仅是一个简单的示例，实际操作中需要根据你的具体环境和需求进行调整，例如你可能需要在一个具有管理员权限的环境中运行这些命令，或者你可能需要将生成的证书存储在一个安全的地方。
 
 ## User:
-<div class="empty:hidden">请继续介绍kind:Group的概念</div>
+请继续介绍kind:Group的概念
 
 ## ChatGPT:
 在 Kubernetes 的 RBAC 中，当你在 RoleBinding 或 ClusterRoleBinding 的 `subjects` 字段中设置 `kind: Group` 时，你实际上是在指定一个用户组，这个用户组将被赋予相应的角色权限。
@@ -140,7 +140,7 @@ kubectl config use-context <username>
 所以，当你在 RoleBinding 中看到 `kind: Group` 和 `name: example-group` 时，它实际上是指一个名为 "example-group" 的用户组，这个用户组应该已经在你的 Kubernetes API 身份验证系统中定义了。这个用户组现在被授权了 RoleBinding 中定义的 Role 的权限。
 
 ## User:
-<div class="empty:hidden">请问，如何为所有 Namespace 下的默认 ServiceAccount（default ServiceAccount），绑定一个只读权限的 Role 呢？请你提供 ClusterRoleBinding（或者 RoleBinding）的 YAML 文件。注意，ClusterRoleBingding和ClusterRole可以作用到所有namespace而且你可以使用system:serviceaccounts来作用于所有sa</div>
+请问，如何为所有 Namespace 下的默认 ServiceAccount（default ServiceAccount），绑定一个只读权限的 Role 呢？请你提供 ClusterRoleBinding（或者 RoleBinding）的 YAML 文件。注意，ClusterRoleBingding和ClusterRole可以作用到所有namespace而且你可以使用system:serviceaccounts来作用于所有sa
 
 ## ChatGPT:
 你可以创建一个 `ClusterRole`，该 `ClusterRole` 具有只读权限，然后通过 `ClusterRoleBinding` 将该 `ClusterRole` 绑定到每个命名空间下的默认 ServiceAccount。这是一个例子：
@@ -174,7 +174,7 @@ roleRef:
 这里需要注意的是，这将授予集群中所有 ServiceAccount 只读权限，这可能包含一些你不希望其具有这些权限的 ServiceAccount。因此，在实践中，你可能需要更细粒度的控制，例如创建不同的 Roles 和 RoleBindings，或者只对特定的 ServiceAccount 授予权限。
 
 ## User:
-<div class="empty:hidden">请问subjects中的apiGroup和roleRef中的apiGroup分别是什么意思？有什么区别？</div>
+请问subjects中的apiGroup和roleRef中的apiGroup分别是什么意思？有什么区别？
 
 ## ChatGPT:
 在 Kubernetes RBAC 中，`subjects` 和 `roleRef` 的 `apiGroup` 字段分别代表了不同的概念：
