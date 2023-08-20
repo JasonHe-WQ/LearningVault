@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 10s # 拉取间隔
+  evaluation_interval: 15s # 评估间隔
+
+rule_files: # 报警规则文件
+  - rules/*.yml
+
+scrape_configs:
+  - job_name: 'telegraf'
+    scrape_interval: 5s # 覆盖拉取间隔
+    static_configs:
+      - targets: ['telegraf:9090'] # 拉取的目标

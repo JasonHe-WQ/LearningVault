@@ -1,0 +1,11 @@
+groups:
+  - name: example
+    rules:
+      - alert: HighRequestLatency
+        expr: job:request_latency_seconds:mean5m{job="telegraf"} > 0.5 # 表达式
+        for: 10m # 持续时间
+        labels:
+          severity: page # 标签
+        annotations:
+          summary: High request latency
+          description: This service has a high request latency.
