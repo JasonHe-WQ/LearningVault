@@ -1,0 +1,26 @@
+route:
+  receiver: email-default
+  routes:
+    - receiver: "slack-warning"
+      group_wait: 10s
+      match_re:
+        severity: warn
+
+receivers:
+  - name: email-default
+    email_configs:
+      - to: example@gmail.com
+        from: sender@example.com
+        smarthost: smtp.gmail.com:587
+        auth_username: sender@example.com
+        auth_identity: sender@example.com
+        auth_password: password # 从谷歌账户中生成的应用程序密码
+        send_resolved: true # 发送解决的警报
+
+  - name: slack-warning
+    slack_configs:
+      - api_url: https://hooks.slack.com/services/xxxxxx/xxxxxx/xxxxxx
+        channel: '#alert_warning'
+        send_resolved: true
+        title_link: http://example.com
+        text: "{{ range .Alerts }}{{ .Annotations.description }}\n{{ end }}"

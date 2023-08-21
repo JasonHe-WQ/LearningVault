@@ -10,3 +10,9 @@ scrape_configs:
     scrape_interval: 5s # 覆盖拉取间隔
     static_configs:
       - targets: ['telegraf:9090'] # 拉取的目标
+
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093 # 报警管理器的地址

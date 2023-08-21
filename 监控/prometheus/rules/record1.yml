@@ -1,0 +1,5 @@
+groups:
+  - name: demo-recording
+    rules:
+      - record: demo_recording_rate5m
+        expr: rate(net_bytes_sent_total[5m]) / rate(net_bytes_received_total[5m])
