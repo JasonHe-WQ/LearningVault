@@ -100,7 +100,7 @@ func main() {
 
 **You:**
 
-	```go
+```go
 go func() {
 		for i := 0; i &lt; 10; i++ {
 			bq.Enqueue(i)
