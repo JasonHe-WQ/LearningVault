@@ -254,13 +254,16 @@ func handleRequest() {
 **You:**
 
 你的代码我有一些不太懂
+```go
  case &lt;-time.After(5 * time.Second): // 模拟一个需要5秒的数据库查询
         if ctx.Err() == nil {
             fmt.Println("Query completed.")
         } else {
             fmt.Println("Query was not completed due to:", ctx.Err())
         }
- case &lt;-time.After(5 * time.Second)请问这里是生成了一个管道吗？
+ case &lt;-time.After(5 * time.Second)
+ ```
+请问这里是生成了一个管道吗？
 ctx.Err()这个API是如何使用的？
 
 * * *
