@@ -1,3 +1,5 @@
+package main
+
 func maxProfit(prices []int, fee int) int {
 	n := len(prices)
 	if n < 2 {

@@ -1,3 +1,5 @@
+package main
+
 func max(a, b int) int {
 	if a > b {
 		return a
@@ -20,8 +22,8 @@ func maxProfit(prices []int) int {
 	frozen[0] = 0
 
 	for i := 1; i < n; i++ {
-		buy[i] = max(buy[i-1], frozen[i-1] - prices[i])
-		sell[i] = max(sell[i-1], buy[i-1] + prices[i])
+		buy[i] = max(buy[i-1], frozen[i-1]-prices[i])
+		sell[i] = max(sell[i-1], buy[i-1]+prices[i])
 		frozen[i] = max(frozen[i-1], sell[i-1])
 	}
 
