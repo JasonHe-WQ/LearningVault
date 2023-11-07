@@ -50,7 +50,7 @@ async def health():
 
 如何解决呢？想一想以前的处理方法，如果一个函数会阻塞主线程，那么就再开一个线程让这个阻塞函数单独运行。所以，这里也是同理，开一个线程单独去运行那些阻塞式操作，比如读取文件等。
 
-`loop.run_in_executor` 方法将同步函数转换为异步非阻塞方式进行处理。具体来说，`loop.run_in_executor()` 可以将同步函数创建为**一个线程**或**进程**，并在其中执行该函数，从而避免阻塞事件循环。
+`loop.run_in_executor` 方法将同步函数转换为异步非阻塞方式进行处理。具体来说，`loop.run_in_executor()` 可以将同步函数创建为**一个线程**或**进程**，并在其中执行该函数，从而避免阻塞事件循环。
 
 > 官方例子：[在线程或者进程池中执行代码。](https://docs.python.org/zh-cn/3/library/asyncio-eventloop.html#executing-code-in-thread-or-process-pools)
 
@@ -132,7 +132,7 @@ RuntimeError: asyncio.run() cannot be called from a running event loop
 文档： https://docs.python.org/zh-cn/3/library/asyncio-task.html#asyncio.run_coroutine_threadsafe
 
 > 向指定事件循环提交一个协程。（线程安全）  
-> 返回一个 [`concurrent.futures.Future`](https://docs.python.org/zh-cn/3/library/concurrent.futures.html#concurrent.futures.Future "concurrent. futures. Future") 以等待来自其他 OS 线程的结果。
+> 返回一个 [`concurrent.futures.Future`](https://docs.python.org/zh-cn/3/library/concurrent.futures.html#concurrent.futures.Future "concurrent. futures. Future") 以等待来自其他 OS 线程的结果。
 
 换句话说，就是**将协程丢给其他线程中的事件循环去运行**。
 
@@ -184,7 +184,7 @@ t.join()
 
 文档： https://docs.python.org/zh-cn/3.10/library/asyncio-eventloop.html#asyncio.loop.run_until_complete
 
-> 运行直到 _future_ ( [`Future`](https://docs.python.org/zh-cn/3.10/library/asyncio-future.html#asyncio.Future "asyncio.Future") 的实例 ) 被完成。
+> 运行直到 _future_ ( [`Future`](https://docs.python.org/zh-cn/3.10/library/asyncio-future.html#asyncio.Future "asyncio.Future") 的实例 ) 被完成。
 
 > 这个方法和 `asyncio.run` 类似。
 

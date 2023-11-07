@@ -180,59 +180,64 @@ goid 竟然是 0，很奇怪。没什么头绪继续往下看，看到一个 gp 
 复现 demo
 -------
 ```go
-package main
-import (
-    "fmt"
-    "runtime"
-    "sync"
-    "time"
+package main
+
+import (
+	"fmt"
+	"runtime"
+	"sync"
+	"time"
 )
-func main() {
-    runtime.GOMAXPROCS(1)    wg := sync.WaitGroup{}
-    wg.Add(3)    m := 10000
-    go func() {
-        defer wg.Done()
-        cnt := 0
-        for {
-            runtime.GC()
-            if cnt == m {
-                fmt.Println("gc done")
-                cnt = 0
-            }
-            cnt++
-        }
-    }()    
-    cnt := 0
-    t := time.NewTimer(1*time.Microsecond)
-    go func() {
-        defer wg.Done()
-        for {
-            <-t.C
-            t.Reset(1*time.Microsecond)
-            if cnt == m {
-                fmt.Println("t.C")
-                cnt = 0
-            }
-            cnt++
-        }
-    }()    
-    cnt1 := 0
-    t1 := time.NewTimer(2*time.Microsecond)
-    go func() {
-        defer wg.Done()
-        for {
-            <-t1.C
-            t1.Reset(2*time.Microsecond)
-            if cnt1 == m {
-                fmt.Println("t1.C")
-                cnt1 = 0
-            }
-            cnt1++
-        }
-    }()    
-    wg.Wait()
-    return
+
+func main() {
+	runtime.GOMAXPROCS(1)
+	var wg  sync.WaitGroup
+	wg.Add(3)
+	m := 10000
+	go func() {
+		defer wg.Done()
+		cnt := 0
+		for {
+			runtime.GC()
+			if cnt == m {
+				fmt.Println("gc done")
+				cnt = 0
+			}
+			cnt++
+		}
+	}()
+	cnt := 0
+	t := time.NewTimer(1 * time.Microsecond)
+	go func() {
+		defer wg.Done()
+		for {
+			<-t.C
+			t.Reset(1 * time.Microsecond)
+			if cnt == m {
+				fmt.Println("t.C")
+				cnt = 0
+			}
+			cnt++
+		}
+	}()
+	cnt1 := 0
+	t1 := time.NewTimer(2 * time.Microsecond)
+	go func() {
+		defer wg.Done()
+		for {
+			<-t1.C
+			t1.Reset(2 * time.Microsecond)
+			if cnt1 == m {
+				fmt.Println("t1.C")
+				cnt1 = 0
+			}
+			cnt1++
+		}
+	}()
+	wg.Wait()
+	return
 }
+
 ```
 跑上几小时就会出现
 

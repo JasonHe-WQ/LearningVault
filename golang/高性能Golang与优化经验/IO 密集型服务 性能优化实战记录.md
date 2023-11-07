@@ -19,11 +19,11 @@ Feature 服务作为特征服务，产出特征数据供上游业务使用。服
 
 ![图片](https://mmbiz.qpic.cn/mmbiz_png/YdZzofiato9LJXrEicIt094ztVYzNoAxyAlqkibcA9FDIxSAnGDZCfKWVOsj6VmHmmho3ibxKibSXC8Jic6eEsmq1d7Q/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)
 
-                             Feature 服务模块图
+                                            Feature 服务模块图
 
 ### 面对问题
 
-服务 API 侧存在较严重的 P99 耗时毛刺问题（固定出现在每分钟第 0-10s），导致上游服务的访问错误率达到 1‰ 以上，影响到业务指标；目标：解决耗时毛刺问题，将 P99 耗时整体优化至 15ms 以下；![图片](https://mmbiz.qpic.cn/mmbiz_png/YdZzofiato9LJXrEicIt094ztVYzNoAxyAEvFFyicbBh0hKmIcym63NMJZybCIeIhP8lK9cMFHZBibDBwoR0SfFuCA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)                               API 模块返回上游 P99 耗时图
+服务 API 侧存在较严重的 P99 耗时毛刺问题（固定出现在每分钟第 0-10s），导致上游服务的访问错误率达到 1‰ 以上，影响到业务指标；目标：解决耗时毛刺问题，将 P99 耗时整体优化至 15ms 以下；![图片](https://mmbiz.qpic.cn/mmbiz_png/YdZzofiato9LJXrEicIt094ztVYzNoAxyAEvFFyicbBh0hKmIcym63NMJZybCIeIhP8lK9cMFHZBibDBwoR0SfFuCA/640?wx_fmt=png&wxfrom=5&wx_lazy=1&wx_co=1)                                               API 模块返回上游 P99 耗时图
 
 解决方案
 ----
@@ -88,60 +88,62 @@ Feature 服务作为特征服务，产出特征数据供上游业务使用。服
 4.  落地实现：修改自 RPCX 开源实现
     
 ```go
-package backuprequestimport (
- "sync/atomic"
- "time" "golang.org/x/net/context"
+package  backuprequest
+import  (
+  "sync/atomic"
+  "time"  
+  "context"
 )
-var inflight int64// call represents an active RPC.
-type call struct {
- Name  string
- Reply interface{} // The reply from the function (*struct).
- Error error       // After completion, the error status.
- Done  chan *call  // Strobes when call is complete.
+var  inflight  int64//  call  represents  an  active  RPC.
+type  call  struct  {
+  Name    string
+  Reply  interface{}  //  The  reply  from  the  function  (*struct).
+  Error  error              //  After  completion,  the  error  status.
+  Done    chan  *call    //  Strobes  when  call  is  complete.
 }
-func (call *call) done() {
- select {
- case call.Done <- call:
- default:
-  logger.Debug("rpc: discarding Call reply due to insufficient Done chan capacity")
- }
+func  (call  *call)  done()  {
+  select  {
+  case  call.Done  <-  call:
+  default:
+    logger.Debug("rpc:  discarding  Call  reply  due  to  insufficient  Done  chan  capacity")
+  }
 }
-func BackupRequest(backupTimeout time.Duration, fn func() (interface{}, error)) (interface{}, error) {
- ctx, cancelFn := context.WithCancel(context.Background())
- defer cancelFn()
- callCh := make(chan *call, 2)
- call1 := &call{Done: callCh, Name: "first"}
- call2 := &call{Done: callCh, Name: "second"}
- go func(c *call) {
-  defer helpers.PanicRecover()
-  c.Reply, c.Error = fn()
-  c.done()
- }(call1) 
-t := time.NewTimer(backupTimeout)
- select {
- case <-ctx.Done(): // cancel by context
-  return nil, ctx.Err()
- case c := <-callCh:
-  t.Stop()
-  return c.Reply, c.Error
- case <-t.C:
-  go func(c *call) {
-   defer helpers.PanicRecover()
-   defer atomic.AddInt64(&inflight, -1)
-   if atomic.AddInt64(&inflight, 1) > BackupLimit {
-    metric.Counter("backup", map[string]string{"mark": "limited"})
-    return
-   }   metric.Counter("backup", map[string]string{"mark": "trigger"})
-   c.Reply, c.Error = fn()
-   c.done()
-  }(call2)
- } select {
- case <-ctx.Done(): // cancel by context
-  return nil, ctx.Err()
- case c := <-callCh:
-  metric.Counter("backup_back", map[string]string{"call": c.Name})
-  return c.Reply, c.Error
- }
+func  BackupRequest(backupTimeout  time.Duration,  fn  func()  (interface{},  error))  (interface{},  error)  {
+  ctx,  cancelFn  :=  context.WithCancel(context.Background())
+  defer  cancelFn()
+  callCh  :=  make(chan  *call,  2)
+  call1  :=  &call{Done:  callCh,  Name:  "first"}
+  call2  :=  &call{Done:  callCh,  Name:  "second"}
+  go  func(c  *call)  {
+    defer  helpers.PanicRecover()
+    c.Reply,  c.Error  =  fn()
+    c.done()
+  }(call1)  
+t  :=  time.NewTimer(backupTimeout)
+  select  {
+  case  <-ctx.Done():  //  cancel  by  context
+    return  nil,  ctx.Err()
+  case  c  :=  <-callCh:
+    t.Stop()
+    return  c.Reply,  c.Error
+  case  <-t.C:
+    go  func(c  *call)  {
+      defer  helpers.PanicRecover()
+      defer  atomic.AddInt64(&inflight,  -1)
+      if  atomic.AddInt64(&inflight,  1)  >  BackupLimit  {
+        metric.Counter("backup",  map[string]string{"mark":  "limited"})
+        return
+      }      metric.Counter("backup",  map[string]string{"mark":  "trigger"})
+      c.Reply,  c.Error  =  fn()
+      c.done()
+    }(call2)
+  }  select  {
+  case  <-ctx.Done():  //  cancel  by  context
+    return  nil,  ctx.Err()
+  case  c  :=  <-callCh:
+    metric.Counter("backup_back",  map[string]string{"call":  c.Name})
+    return  c.Reply,  c.Error
+  }
 }
 ```
 #### 效果
