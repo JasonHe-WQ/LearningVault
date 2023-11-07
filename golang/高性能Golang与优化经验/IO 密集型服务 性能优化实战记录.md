@@ -87,32 +87,37 @@ Feature 服务作为特征服务，产出特征数据供上游业务使用。服
 
 4.  落地实现：修改自 RPCX 开源实现
     
-
+```go
 package backuprequestimport (
  "sync/atomic"
  "time" "golang.org/x/net/context"
-)var inflight int64// call represents an active RPC.
+)
+var inflight int64// call represents an active RPC.
 type call struct {
  Name  string
- Reply interface{} // The reply from the function (\*struct).
+ Reply interface{} // The reply from the function (*struct).
  Error error       // After completion, the error status.
- Done  chan \*call  // Strobes when call is complete.
-}func (call \*call) done() {
+ Done  chan *call  // Strobes when call is complete.
+}
+func (call *call) done() {
  select {
  case call.Done <- call:
  default:
   logger.Debug("rpc: discarding Call reply due to insufficient Done chan capacity")
  }
-}func BackupRequest(backupTimeout time.Duration, fn func() (interface{}, error)) (interface{}, error) {
+}
+func BackupRequest(backupTimeout time.Duration, fn func() (interface{}, error)) (interface{}, error) {
  ctx, cancelFn := context.WithCancel(context.Background())
  defer cancelFn()
- callCh := make(chan \*call, 2)
+ callCh := make(chan *call, 2)
  call1 := &call{Done: callCh, Name: "first"}
- call2 := &call{Done: callCh, Name: "second"} go func(c \*call) {
+ call2 := &call{Done: callCh, Name: "second"}
+ go func(c *call) {
   defer helpers.PanicRecover()
   c.Reply, c.Error = fn()
   c.done()
- }(call1) t := time.NewTimer(backupTimeout)
+ }(call1) 
+t := time.NewTimer(backupTimeout)
  select {
  case <-ctx.Done(): // cancel by context
   return nil, ctx.Err()
@@ -120,13 +125,13 @@ type call struct {
   t.Stop()
   return c.Reply, c.Error
  case <-t.C:
-  go func(c \*call) {
+  go func(c *call) {
    defer helpers.PanicRecover()
-   defer atomic.AddInt64(&inflight, \-1)
+   defer atomic.AddInt64(&inflight, -1)
    if atomic.AddInt64(&inflight, 1) > BackupLimit {
-    metric.Counter("backup", map\[string\]string{"mark": "limited"})
+    metric.Counter("backup", map[string]string{"mark": "limited"})
     return
-   }   metric.Counter("backup", map\[string\]string{"mark": "trigger"})
+   }   metric.Counter("backup", map[string]string{"mark": "trigger"})
    c.Reply, c.Error = fn()
    c.done()
   }(call2)
@@ -134,11 +139,11 @@ type call struct {
  case <-ctx.Done(): // cancel by context
   return nil, ctx.Err()
  case c := <-callCh:
-  metric.Counter("backup\_back", map\[string\]string{"call": c.Name})
+  metric.Counter("backup_back", map[string]string{"call": c.Name})
   return c.Reply, c.Error
  }
 }
-
+```
 #### 效果
 
 收益：P99 耗时整体从 20-60ms 降低至 6ms，毛刺全部干掉；（backupTimeout=5ms）

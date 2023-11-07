@@ -1,6 +1,6 @@
 
 
-\[Go 1.14.1\]一个死锁bug的排查始末
+[Go 1.14.1]一个死锁bug的排查始末
 
 红茶 预计时间 15:10 字数 3185 语言 ZH-CN
 
@@ -47,7 +47,7 @@ dlv
 
 这个调用是要在系统栈上执行 stopTheWorldWithSema，但通过 dlv 查看的调用栈上就看不到接下来的链路了，大概率是因为切换栈导致的，通过单步调试的方式（过程略)确定了 frame 0 与 fame 1 之间缺少的调用链路为
 
-stopTheWorldWithSema → notetsleep → notetsleep\_internal → futexsleep → futex
+stopTheWorldWithSema → notetsleep → notetsleep_internal → futexsleep → futex
 
 同样用单步调试发现
 
@@ -179,13 +179,15 @@ goid 竟然是 0，很奇怪。没什么头绪继续往下看，看到一个 gp 
 
 复现 demo
 -------
-
-package mainimport (
+```go
+package main
+import (
     "fmt"
     "runtime"
     "sync"
     "time"
-)func main() {
+)
+func main() {
     runtime.GOMAXPROCS(1)    wg := sync.WaitGroup{}
     wg.Add(3)    m := 10000
     go func() {
@@ -199,46 +201,41 @@ package mainimport (
             }
             cnt++
         }
-    }()    cnt := 0
-    t := time.NewTimer(1\*time.Microsecond)
+    }()    
+    cnt := 0
+    t := time.NewTimer(1*time.Microsecond)
     go func() {
         defer wg.Done()
         for {
             <-t.C
-            t.Reset(1\*time.Microsecond)
+            t.Reset(1*time.Microsecond)
             if cnt == m {
                 fmt.Println("t.C")
                 cnt = 0
             }
             cnt++
         }
-    }()    cnt1 := 0
-    t1 := time.NewTimer(2\*time.Microsecond)
+    }()    
+    cnt1 := 0
+    t1 := time.NewTimer(2*time.Microsecond)
     go func() {
         defer wg.Done()
         for {
             <-t1.C
-            t1.Reset(2\*time.Microsecond)
+            t1.Reset(2*time.Microsecond)
             if cnt1 == m {
                 fmt.Println("t1.C")
                 cnt1 = 0
             }
             cnt1++
         }
-    }()    wg.Wait()
+    }()    
+    wg.Wait()
     return
 }
-
+```
 跑上几小时就会出现
 
 回退到 1.13 版本或者升级到 1.14.2 及以上
 
 * * *
-
-最后，给自己打个广告
-
-欢迎加入 **随波逐流的薯条** 微信群。
-
-薯条目前有草帽群、木叶群、琦玉群，群交流内容不限于技术、投资、趣闻分享等话题。欢迎感兴趣的同学入群交流。
-
-入群请加薯条的个人微信：709834997。并备注：加入薯条微信群。
