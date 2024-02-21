@@ -862,7 +862,7 @@ client-go 主要提供以下几个功能：
 
 *   Share Informer 和 Informer 的主要区别就是可以添加多个 EventHandler, 代码比较类似我就只展示重要的部分
     
-    ```
+    ```go
     ...
     ...
     func main() {
